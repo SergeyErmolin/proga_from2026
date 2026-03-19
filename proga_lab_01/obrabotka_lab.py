@@ -8,24 +8,40 @@ def least_squares(x, y):
     err_k = (1 / np.sqrt(len(x))) * np.sqrt(((y**2).mean() - (y).mean()**2) / ((x*x).mean()-x.mean()**2) - coeff ** 2)
     return coeff, smeshenie, err_k
 
-tochki = pd.read_csv(r'C:\Users\zhune\OneDrive\Desktop\рабочая папка VScode\пробуем\data\tochki.csv')
-#tochki_dop1 = pd.read_csv(r'C:\Users\zhune\OneDrive\Desktop\рабочая папка VScode\пробуем\data\tochki_dop1.csv')
-print(tochki)
+tochki_dop = pd.read_csv(r'C:\Users\zhune\OneDrive\Desktop\рабочая папка VScode\пробуем\data\tochki_dop.csv')
+tochki_dop0 = pd.read_csv(r'C:\Users\zhune\OneDrive\Desktop\рабочая папка VScode\пробуем\data\tochki_dop0.csv')
+tochki_dop1 = pd.read_csv(r'C:\Users\zhune\OneDrive\Desktop\рабочая папка VScode\пробуем\data\tochki_dop1.csv')
+tochki_dop2 = pd.read_csv(r'C:\Users\zhune\OneDrive\Desktop\рабочая папка VScode\пробуем\data\tochki_dop2.csv')
 
-coeff, smeshenie, err = least_squares(np.log(tochki['length']), np.log(tochki['time']))
-print(coeff, smeshenie, err)
+print(tochki_dop0)
+set_of_grafs = [tochki_dop,tochki_dop0,tochki_dop1,tochki_dop2]
+set_of_legend = ["graf lin","graf A", "graf B", "graf C"]
+counter = 0
 
-plt.plot(np.log(tochki['length']), (coeff * np.log(tochki['length'])) + smeshenie)
-plt.scatter(np.log(tochki["length"]), np.log(tochki["time"]), s=10, c='red')
+# for tochki in set_of_grafs:
+#     coeff, smeshenie, err = least_squares(np.log2(tochki['length']), np.log2(tochki['time']))
+#     print(coeff, smeshenie, err)
+#     plt.plot(np.log2(tochki['length']), (coeff * np.log2(tochki['length'])) + smeshenie, label=set_of_legend[counter])
+#     plt.scatter(np.log2(tochki["length"]), np.log2(tochki["time"]), s=10)
+#     counter += 1
 
+# plt.xlabel('log2 (N/1)')
+# plt.ylabel('log2 (T/microsecond)')
+
+for tochki in set_of_grafs:
+    coeff, smeshenie, err = least_squares((tochki['length']), (tochki['time']))
+#print(coeff, smeshenie, err)
+    plt.plot((tochki['length']), (coeff * (tochki['length'])) + smeshenie, label=set_of_legend[counter])
+    plt.scatter((tochki["length"]), (tochki["time"]), s=10)
+    counter += 1
+
+plt.xlabel('N')
+plt.ylabel('T, microsecond')
 
 #plt.scatter((tochki["length"]), (tochki["time"]), s=10, c='red')
 
-#plt.errorbar(tochki["DP_3_2_4"], tochki['Q_3_2_4'], xerr=0.98, yerr=0.034, linestyle='')
 # plt.scatter(0, 0, s=1, c='red')
 
-plt.xlabel('ln(N)')
-plt.ylabel('ln(T)')
 
 
 '''
@@ -34,4 +50,5 @@ print(coeff, smeshenie, err)
 '''
 
 plt.grid(linewidth=0.5) 
+plt.legend()
 plt.show()

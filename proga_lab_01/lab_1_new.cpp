@@ -136,8 +136,8 @@ string line_C_find_idx(int N, int elm, int*& ptr, int*& schet) {
 
 int64_t schitaem_vrema_bad(int length, int find_el, int*& random_arr, int*& schet) {
     auto begin = std :: chrono :: steady_clock ::now();
-    for (unsigned cnt = 10000; cnt != 0;--cnt) {
-        lin_find_sum_to_match(length, find_el, random_arr); // suda funcCiu
+    for (unsigned cnt = 100000; cnt != 0;--cnt) {
+        line_find_idx(length, find_el, random_arr); // suda funcCiu
     }
     auto end = std :: chrono :: steady_clock ::now();
     auto time_span = std :: chrono :: duration_cast<std :: chrono :: microseconds >(end-begin);
@@ -149,8 +149,9 @@ int64_t schitaem_vrema_medium(int length, std::default_random_engine& rng, int*&
     std::uniform_int_distribution<unsigned> element_dstr(0, length);
     auto begin = std :: chrono :: steady_clock ::now();
     for (unsigned cnt = 100000; cnt != 0;--cnt) {
+        element_dstr(rng);
         //line_C_find_idx(length, random_arr[element_dstr(rng)], random_arr, schet); // suda funcCiu
-        sqr_find_sum_to_match(length, random_arr[element_dstr(rng)] + random_arr[element_dstr(rng)], random_arr);
+        //sqr_find_sum_to_match(length, random_arr[element_dstr(rng)] + random_arr[element_dstr(rng)], random_arr);
     }
     auto end = std :: chrono :: steady_clock ::now();
     auto time_span = std :: chrono :: duration_cast<std :: chrono :: microseconds >(end-begin);
@@ -162,21 +163,21 @@ int64_t schitaem_vrema_ABC(int length, std::default_random_engine& rng, int*& ra
     for (int i = 0; i < length; ++i) {
         karta[i] = random_arr[i];
     }
-    
+    // probability distribution
     double intervals[] = {0.0, static_cast<double>(length)};
-    double weights[] = {1.0, 0.0};
+    double weights[] = {1.0, 1.0};
     std::piecewise_linear_distribution<double> dist(std::begin(intervals), std::end(intervals), std::begin(weights));
 
     auto begin = std :: chrono :: steady_clock ::now();
     for (unsigned cnt = 100000; cnt != 0;--cnt) {
-        static_cast<int>(dist(rng));
+        karta[static_cast<int>(dist(rng))];
     }
     auto end = std :: chrono :: steady_clock ::now();
     auto time_form = std :: chrono :: duration_cast<std :: chrono :: microseconds >(end-begin);
     
     begin = std :: chrono :: steady_clock ::now();
     for (unsigned cnt = 100000; cnt != 0;--cnt) {
-        line_find_idx(length,karta[static_cast<int>(dist(rng))], random_arr); //   ,schet   suda funcCiu
+        line_C_find_idx(length,karta[static_cast<int>(dist(rng))], random_arr, schet); //   ,schet   suda funcCiu
     }
     end = std :: chrono :: steady_clock ::now();
     auto time_span = std :: chrono :: duration_cast<std :: chrono :: microseconds >(end-begin);
@@ -192,15 +193,15 @@ int main() {
 
     int find_el = -1, a = 0;
 
-    std::ofstream outFile("lin_1to0.txt");
+    std::ofstream outFile("lin_bad.txt");
 
     outFile << "time" << ',' << "length" << '\n';
 
-    for (int i = 500; i < 8'000'000; i*=2) {
+    for (int i = 500; i < 4'000'000; i*=2) {
         int *random0 = create_random_array(i, rng);
         int *schetchik = give_N_elements(i, 0);
         //std::sort(random0, random0 + i);
-        outFile << schitaem_vrema_ABC(i, rng, random0, schetchik) << ',' << i << '\n';
+        outFile << schitaem_vrema_bad(i, -1, random0, schetchik) << ',' << i << '\n';
         delete[] random0;
         delete[] schetchik;
     }
